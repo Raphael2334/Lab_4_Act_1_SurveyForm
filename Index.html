@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Silksong Speedrunning Tournament</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div class="form-container">
+
+        <div class="header-row">
+            <img src="Hornet.png" alt="Hornet Silksong" class="logo" />
+            <h1>Silksong Speedrunning Tournament Registration</h1>
+        </div>
+
+        <!-- No action/method needed – fetch handles it -->
+        <form id="TourneyForm">
+
+            <fieldset>
+                <legend>1. Personal Information</legend>
+
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Gender <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="gender" value="Male" required /> Male</label>
+                        <label><input type="radio" name="gender" value="Female" /> Female</label>
+                        <label><input type="radio" name="gender" value="Other" /> Other</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age <span class="required">*</span></label>
+                    <input type="number" id="age" name="age" min="13" max="99" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>2. Run Category</legend>
+                <p class="question">Which category do you plan to run?</p>
+
+                <div class="radio-group">
+                    <label><input type="radio" name="category" value="any-percent" /> Any%</label>
+                    <label><input type="radio" name="category" value="100-percent" /> 100%</label>
+                    <label><input type="radio" name="category" value="all-bosses" /> All Bosses</label>
+                    <label><input type="radio" name="category" value="audience" /> Audience Member</label>
+                    <label><input type="radio" name="category" value="other" /> Other (please specify in feedback)</label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>3. Availability</legend>
+                <p class="question">Which days are you available for the tournament? (Select all that apply)</p>
+
+                <div class="checkbox-group">
+                    <label><input type="checkbox" class="avail" value="monday" /> Monday</label>
+                    <label><input type="checkbox" class="avail" value="tuesday" /> Tuesday</label>
+                    <label><input type="checkbox" class="avail" value="wednesday" /> Wednesday</label>
+                    <label><input type="checkbox" class="avail" value="thursday" /> Thursday</label>
+                    <label><input type="checkbox" class="avail" value="friday" /> Friday</label>
+                    <label><input type="checkbox" class="avail" value="weekend" /> Saturday / Sunday</label>
+                </div>
+
+                <input type="hidden" id="avail" name="availability" value="" />
+            </fieldset>
+
+            <fieldset>
+                <legend>4. Speedrunning Experience</legend>
+                <p class="question">How would you rate your overall speedrunning experience with Silksong (or similar games)?</p>
+
+                <div class="form-group">
+                    <label for="experience">Experience Level</label>
+                    <select id="experience" name="experience">
+                        <option value="" disabled selected>— Select —</option>
+                        <option value="beginner">Beginner – Little to no experience</option>
+                        <option value="intermediate">Intermediate – Some runs under 2 hours</option>
+                        <option value="advanced">Advanced – Sub-1 hour runs</option>
+                        <option value="expert">Expert – Top 10 leaderboard</option>
+                        <option value="professional">Professional – World record contender</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>5. Additional Feedback</legend>
+                <p class="question">Any requests, comments, or suggestions for the tournament?</p>
+
+                <div class="form-group">
+                    <label for="feedback">Your Feedback</label>
+                    <textarea id="feedback" name="feedback" rows="5"></textarea>
+                </div>
+            </fieldset>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-submit">Submit Registration</button>
+                <button type="reset" class="btn btn-reset">Clear All</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        (function () {
+            const form = document.getElementById('TourneyForm');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                document.getElementById('avail').value =
+                    [...document.querySelectorAll('.avail:checked')].map(cb => cb.value).join(', ');
+
+                const formData = new FormData(form);
+                const urlEncodedData = new URLSearchParams(formData).toString();
+
+                fetch('https://script.google.com/macros/s/AKfycbwNWBg2HAuG_m5NFKmVeLYww1sbgalg74lmV6i8uhXM46pnp5IIJI3fI-RpDU6SSv_6/exec', {
+                    method: 'POST',
+                    mode: 'no-cors',   // ✅ allows cross-origin request without CORS errors
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: urlEncodedData,
+                })
+                .then(() => {
+                    alert('Your survey response has been submitted.');
+                    form.reset();
+                    document.getElementById('avail').value = '';
+                    document.querySelectorAll('.avail').forEach(cb => cb.checked = false);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('There was a problem submitting your registration. Please try again.');
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
